@@ -3,10 +3,11 @@ import redis
 from functions import inicializar
 
 app = Flask(__name__)
-
+#IP address del host
+host = '172.17.0.2'
 
 def connect_db():
-    conexion = redis.StrictRedis(host='172.17.0.2', port=6379, db=0, charset="utf-8", decode_responses=True)
+    conexion = redis.StrictRedis(host= host, port=6379, db=0, charset="utf-8", decode_responses=True)
     if(conexion.ping()):
         print("conectado al servidor de redis")
     else:
