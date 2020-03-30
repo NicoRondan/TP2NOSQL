@@ -1,42 +1,61 @@
 {% extends 'layout.html' %}
 
 {% block body%}
+
 <div class="row">
     <div class="col-md-12">
+        {% with messages = get_flashed_messages() %}
+            {% if messages%}
+                {% for message in messages %}
+                    <div class="alert alert-light alert-dismissible fade show" role="alert">
+                        <strong>{{ message }}</strong> 
+                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                          <span aria-hidden="true">&times;</span>
+                        </button>
+                      </div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
         <table class="table table-striped table-bordered bg-black table-lg">
             <thead>
                 <tr>
-                  <td class="text-center">Capitulo</td>
-                  <td class="text-center">Título</td>
-                  <td class="text-center">Precio</td>
-                  <td class="text-center">Estado</td> 
-                  <td class="text-center">Acciones</td> 
+                  <td class="text-center"><h4>Capitulo</h4></td>
+                  <td class="text-center"><h4>Título</h4></td>
+                  <td class="text-center"><h4>Precio</h4></td>
+                  <td class="text-center"><h4>Estado</h4></td> 
+                  <td class="text-center"><h4>Acciones</h4></td> 
                 </tr>
             </thead>
             <tbody>
                {% for chapter in data %}
                 <tr>
-                    <td class="text-center">1x{{chapter}}</td>
-                    <td class="text-center">{{db.hmget(chapter, 'titulo')[0]}}</td>
-                    <td class="text-center">$ {{db.hmget(chapter, 'precio')[0]}}</td>
+                    <td class="text-center"><h4>1x{{chapter}}</h4></td>
+                    <td class="text-center"><h4>{{db.hmget(chapter, 'titulo')[0]}}</h4></td>
+                    <td class="text-center"><h4>$ {{db.hmget(chapter, 'precio')[0]}}</h4></td>
                     <td class="text-center">
                     {% if db.exists('estado ' + chapter) == 0 %}
-                        disponible
+                        <h4><span class="badge badge-pill badge-info">disponible</span></h4>
                     {% else %}
-                        {{db.get('estado ' + chapter)}}
+                        {% with state = db.get('estado ' + chapter) %}
+                            {% if state == 'reservado' %}
+                                <h4><span class="badge badge-pill badge-secondary">{{state}}</span></h4>
+                            {% else %}
+                                <h4><span class="badge badge-pill badge-danger">{{state}}</span></h4>
+                            {% endif %}
+                        {% endwith %}
                     {% endif %}
                     </td>
                     <td class="text-center"> 
                         {% if db.exists('estado ' + chapter) == 0 %}
-                            <a href="/reservar?capitulo={{chapter}}" class="btn btn-success">Alquilar</a>
+                            <a href="/reservar?capitulo={{chapter}}" class="btn btn-outline-success"><h5>Alquilar</h5></a>
                         {% else %}
-                            {% if db.get('estado ' + chapter) == 'reservado' %}
-                                <a href="/confirmar-pago?capitulo={{chapter}}&precio={{db.hmget(chapter, 'precio')[0]}}" class="btn btn-primary">Confirmar Pago</a>
-                            {% else %}
-                                {% if db.get('estado ' + chapter) == 'alquilado' %} 
-                                    <p class="text-danger">--</p>
+                            {% with state =  db.get('estado ' + chapter) %}
+                                {% if state == 'reservado' %}
+                                    <a href="/confirmar-pago?capitulo={{chapter}}&precio={{db.hmget(chapter, 'precio')[0]}}" class="btn btn-outline-info"><h5>Confirmar Pago</h5></a>
+                                {% else %}
+                                    <h4 class="text-danger">--</h4>
                                 {% endif %}
-                            {% endif %}
+                            {% endwith %}
                         {% endif %}  
                     </td>
                 </tr>

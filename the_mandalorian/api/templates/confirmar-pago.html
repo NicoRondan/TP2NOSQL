@@ -4,20 +4,22 @@
     <div class="row">
         <div class="col-md-7 offset-md-3">
             <div class="card">
-                <div class="card-title">
+                <div class="card-title text-center">
                     <h3>The Mandalorian sx{{data[0]}}</h3>
+                    <hr>
                 </div>
-                <div class="card-body text-center">
+                <div class="card-block text-center">
                     <form action="/confirmar-pago?capitulo={{data[0]}}" method="POST">
                         <div class="form-group">
-                            <p>Título: {{data[1]}}</p>
-                            <p>Precio: $ {{data[2]}}</p>
+                            <h4 class="lead">Título: {{data[1]}}</h4>
+                            <h4 class="lead">Precio: $ {{data[2]}}</h4>
                         </div>
-                        <button class="btn btn-primary btn-lg" type=submit> 
+                        <button class="btn btn-success btn-lg" type=submit> 
                             Confirmar Pago
                         </button>
                     </form>
                 </div>
+                <hr>
                 <div class="card-footer ml-auto">
                     <a href="/" class="btn btn-danger btn-lg">Cancelar</a>
                 </div>

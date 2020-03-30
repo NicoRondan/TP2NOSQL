@@ -1,8 +1,9 @@
-from flask import Flask, render_template, request, redirect, url_for
+from flask import Flask, render_template, request, redirect, url_for, flash
 import redis 
 from functions import inicializar
 
 app = Flask(__name__)
+
 #IP address del host
 host = '172.17.0.2'
 
@@ -21,7 +22,9 @@ db = connect_db()
 #db.flushdb()
 
 """Carga de datos a la bbdd"""
-inicializar(db)
+if db.dbsize() == 0:
+    inicializar(db)
+
 
 """Persistencia de datos"""
 def guardar():
@@ -50,8 +53,12 @@ def confirmarPago():
         precio = request.args.get('precio')
         #obtener titulo de la bbdd
         titulo = db.hget(capitulo, 'titulo')
-        data = [capitulo, titulo, precio]
-        return render_template('confirmar-pago.html', data = data)
+        #Verificar que no se haya vencido la reserva
+        if db.exists('estado ' + capitulo) == 0:
+            return redirect(url_for('index'))
+        else:
+            data = [capitulo, titulo, precio]
+            return render_template('confirmar-pago.html', data = data)    
     elif request.method == 'POST':
         #Obtener parametros de la URL
         capitulo = request.args.get('capitulo')
@@ -62,6 +69,7 @@ def confirmarPago():
         #establecer tiempo 24hs a segundos
         db.expire(key, 86400)
         #Volver al index.html
+        flash('Pago Confirmado!')
         return redirect(url_for('index'))
 
 
@@ -76,6 +84,7 @@ def reservarCapitulo():
     #establecer tiempo 4min a segundos
     db.expire(key, 240)
     #Volver al index.html
+    flash('Capitulo Reservado Satisfactoriamente!')
     return redirect(url_for('index'))
 
 if __name__ == '__main__':
