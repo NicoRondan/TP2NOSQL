@@ -1,45 +1,30 @@
 from flask import Flask, render_template, request, redirect, url_for, flash
-import redis 
-from functions import inicializar
+from database import Database
 
 app = Flask(__name__)
 
-#IP address del host
-host = '172.17.0.2'
-
-def connect_db():
-    conexion = redis.StrictRedis(host= host, port=6379, db=0, charset="utf-8", decode_responses=True)
-    if(conexion.ping()):
-        print("conectado al servidor de redis")
-    else:
-        print("error...")
-    return conexion
 
 """Conexion con redis"""
-db = connect_db()
+db = Database()
+
 
 """Reiniciar bbdd"""
-#db.flushdb()
+db.reiniciar()
 
 """Carga de datos a la bbdd"""
-if db.dbsize() == 0:
-    inicializar(db)
+if db.vacia:
+    db.inicializar()
 
 
-"""Persistencia de datos"""
-def guardar():
-    db.save()
-
-
-
-"""Settings"""
+"""Session"""
 app.secret_key = 'clavesecreta'
 
 
 @app.route('/')
 def index():
     #Obtener solamente los capitulos
-    data = db.keys('[1-8]*')
+    formato = '[1-8]*'
+    data = db.keys(formato)
     #Ordenar la lista
     data.sort()
     return render_template('index.html', data = data, db = db)
@@ -55,7 +40,7 @@ def confirmarPago():
         titulo = db.hget(capitulo, 'titulo')
         #Generar key
         key = 'estado ' + capitulo
-        if db.exists(key) == 0:
+        if not(db.existe(key)):
             return redirect(url_for('index'))
         elif db.get(key) == 'alquilado':
             return redirect(url_for('index'))
@@ -92,5 +77,5 @@ def reservarCapitulo():
 
 if __name__ == '__main__':
     app.run(host='localhost', port='5000', debug=False)
-    exit(guardar())
+    exit(db.guardar())
 

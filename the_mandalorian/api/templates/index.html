@@ -33,7 +33,7 @@
                     <td class="text-center"><h4>{{db.hmget(chapter, 'titulo')[0]}}</h4></td>
                     <td class="text-center"><h4>$ {{db.hmget(chapter, 'precio')[0]}}</h4></td>
                     <td class="text-center">
-                    {% if db.exists('estado ' + chapter) == 0 %}
+                    {% if not(db.existe('estado ' + chapter)) %}
                         <h4><span class="badge badge-pill badge-info">disponible</span></h4>
                     {% else %}
                         {% with state = db.get('estado ' + chapter) %}
@@ -46,7 +46,7 @@
                     {% endif %}
                     </td>
                     <td class="text-center"> 
-                        {% if db.exists('estado ' + chapter) == 0 %}
+                        {% if not(db.existe('estado ' + chapter)) %}
                             <a href="/reservar?capitulo={{chapter}}" class="btn btn-outline-success"><h5>Alquilar</h5></a>
                         {% else %}
                             {% with state =  db.get('estado ' + chapter) %}

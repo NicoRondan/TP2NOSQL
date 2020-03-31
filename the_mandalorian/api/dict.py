@@ -1,14 +1,3 @@
-"""Inicializar base de datos"""
-def inicializar(db):
-    for x in range(8):
-        capitulo = str(x + 1)
-        mapping = {
-            "titulo": getTitle(capitulo),
-            "precio": getPrice(capitulo),
-        }
-        #Guardamos en la base de datos
-        db.hmset(capitulo, mapping)
-
 
 """obtener titulo y precio"""
 def getTitle(capitulo):
