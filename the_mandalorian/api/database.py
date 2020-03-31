@@ -16,6 +16,7 @@ def connect_db():
 class Database:
     def __init__(self):
         self.db = connect_db()
+        
     def vacia(self):
         return self.db.dbsize() == 0
     def guardar(self):

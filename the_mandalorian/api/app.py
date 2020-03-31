@@ -9,7 +9,7 @@ db = Database()
 
 
 """Reiniciar bbdd"""
-db.reiniciar()
+#db.reiniciar()
 
 """Carga de datos a la bbdd"""
 if db.vacia:
