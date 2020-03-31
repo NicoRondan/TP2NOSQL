@@ -53,8 +53,11 @@ def confirmarPago():
         precio = request.args.get('precio')
         #obtener titulo de la bbdd
         titulo = db.hget(capitulo, 'titulo')
-        #Verificar que no se haya vencido la reserva
-        if db.exists('estado ' + capitulo) == 0:
+        #Generar key
+        key = 'estado ' + capitulo
+        if db.exists(key) == 0:
+            return redirect(url_for('index'))
+        elif db.get(key) == 'alquilado':
             return redirect(url_for('index'))
         else:
             data = [capitulo, titulo, precio]
@@ -63,7 +66,7 @@ def confirmarPago():
         #Obtener parametros de la URL
         capitulo = request.args.get('capitulo')
         #generar key
-        key = 'estado' + ' ' + capitulo
+        key = 'estado ' + capitulo
         #Actualizar estado
         db.set(key, 'alquilado')
         #establecer tiempo 24hs a segundos
