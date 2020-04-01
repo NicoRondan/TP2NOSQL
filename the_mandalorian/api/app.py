@@ -3,10 +3,13 @@ from database import Database
 
 app = Flask(__name__)
 
+#IP address del host
+host = '172.17.0.2'
 
 """Conexion con redis"""
-db = Database()
+db = Database(host)
 
+db2 = Database(host)
 
 """Reiniciar bbdd"""
 #db.reiniciar()
@@ -25,8 +28,6 @@ def index():
     #Obtener solamente los capitulos
     formato = '[1-8]*'
     data = db.keys(formato)
-    #Ordenar la lista
-    data.sort()
     return render_template('index.html', data = data, db = db)
 
 

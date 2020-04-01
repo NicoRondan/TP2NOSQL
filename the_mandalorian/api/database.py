@@ -1,11 +1,10 @@
 import redis
 from functions import getPrice, getTitle
 
-#IP address del host
-host = '172.17.0.2'
 
 
-def connect_db():
+
+def connect_db(host):
         conexion = redis.StrictRedis(host= host, port=6379, db=0, charset="utf-8", decode_responses=True)
         if(conexion.ping()):
             print("conectado al servidor de redis")
@@ -14,8 +13,8 @@ def connect_db():
         return conexion
 
 class Database:
-    def __init__(self):
-        self.db = connect_db()
+    def __init__(self, host):
+        self.db = connect_db(host)
         
     def vacia(self):
         return self.db.dbsize() == 0
