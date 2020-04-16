@@ -9,7 +9,6 @@ host = '172.17.0.2'
 """Conexion con redis"""
 db = Database(host)
 
-db2 = Database(host)
 
 """Reiniciar bbdd"""
 #db.reiniciar()
